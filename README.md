@@ -30,7 +30,19 @@ Work in progress. See the commit history for what's implemented so far.
 
 ```
 T16_ISA_Specification.md   ISA specification
+modules/                   SystemVerilog design sources
+Test benches/               Per-module testbenches (simulation sources)
 ```
+
+## Running the testbenches
+
+Each module under `modules/` that has a corresponding file in `Test benches/` can be
+simulated on its own — no need to build the full CPU first. In Vivado, add the module
+under test as a design source and its testbench as a simulation source, then run
+behavioral simulation. Each testbench prints `PASS`/`FAIL` per check and a final
+summary line.
+
+Implemented so far: `alu.sv`, `regfile.sv`, `instr_decode.sv`.
 
 ## Development workflow
 
