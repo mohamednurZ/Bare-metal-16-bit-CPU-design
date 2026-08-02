@@ -44,6 +44,13 @@ summary line.
 
 Implemented so far: `alu.sv`, `regfile.sv`, `instr_decode.sv`.
 
+## Memory-mapped UART
+
+A `SW` targeting address `0xFFF` doesn't reach data memory — `mem_decoder.sv`
+intercepts it and routes the low byte of the stored register out over UART instead.
+Every other address behaves as ordinary RAM. See `T16_ISA_Specification.md` §3 for
+the full memory map.
+
 ## Development workflow
 
 Features are built module-by-module on short-lived branches, roughly in dependency
