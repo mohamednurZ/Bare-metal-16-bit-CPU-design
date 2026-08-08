@@ -7,7 +7,8 @@ individually testbenched; and a real FPGA target with UART output for a live dem
 
 ## Status
 
-Work in progress. See the commit history for what's implemented so far.
+`cpu_top.sv` integrates every module into a complete single-cycle CPU. Simulate it
+with the included Fibonacci demo, or synthesize it for the Zybo Z7-10.
 
 ## Documentation
 
@@ -30,7 +31,7 @@ Work in progress. See the commit history for what's implemented so far.
 
 ```
 T16_ISA_Specification.md   ISA specification
-modules/                   SystemVerilog design sources
+modules/                   SystemVerilog design sources (+ fib.mem demo program)
 Test benches/               Per-module testbenches (simulation sources)
 ```
 
@@ -43,6 +44,19 @@ behavioral simulation. Each testbench prints `PASS`/`FAIL` per check and a final
 summary line.
 
 Implemented so far: `alu.sv`, `regfile.sv`, `instr_decode.sv`.
+
+## Simulating the full CPU
+
+`modules/fib.mem` is a hand-assembled program (the Fibonacci example from
+`T16_ISA_Specification.md` §8) ready to load via `cpu_top`'s `INSTR_INIT_FILE`
+parameter:
+
+```systemverilog
+cpu_top #(.INSTR_INIT_FILE("fib.mem")) dut (...);
+```
+
+Run it in behavioral simulation and watch `rd_data`/register values change each
+cycle, or watch `uart_tx_serial` if your test program writes to the UART address.
 
 ## Memory-mapped UART
 
