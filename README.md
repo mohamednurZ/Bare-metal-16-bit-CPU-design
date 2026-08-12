@@ -7,8 +7,9 @@ individually testbenched; and a real FPGA target with UART output for a live dem
 
 ## Status
 
-`cpu_top.sv` integrates every module into a complete single-cycle CPU. Simulate it
-with the included Fibonacci demo, or synthesize it for the Zybo Z7-10.
+`cpu_top.sv` integrates every module into a complete single-cycle CPU, with pin
+constraints for the Zybo Z7-10. Simulate it with the included Fibonacci demo, or
+synthesize it and run it on real hardware.
 
 ## Documentation
 
@@ -33,6 +34,7 @@ with the included Fibonacci demo, or synthesize it for the Zybo Z7-10.
 T16_ISA_Specification.md   ISA specification
 modules/                   SystemVerilog design sources (+ fib.mem demo program)
 Test benches/               Per-module testbenches (simulation sources)
+contraints/                 Vivado constraints (.xdc) for the Zybo Z7-10
 ```
 
 ## Running the testbenches
@@ -64,6 +66,24 @@ A `SW` targeting address `0xFFF` doesn't reach data memory — `mem_decoder.sv`
 intercepts it and routes the low byte of the stored register out over UART instead.
 Every other address behaves as ordinary RAM. See `T16_ISA_Specification.md` §3 for
 the full memory map.
+
+## Building for hardware
+
+1. Add every file under `modules/` as a design source, with `cpu_top` set as the top module.
+2. Add `contraints/zybo_constraints.xdc` as a constraints source.
+3. Set `INSTR_INIT_FILE` to your program's `.mem` file (e.g. `fib.mem`), and confirm
+   `CLK_FREQ_HZ` matches the board's actual clock before relying on the UART's baud rate.
+4. Connect an external USB-to-serial (FTDI) adapter to Pmod JE pin 0 to view UART
+   output on a PC terminal — the Zybo Z7's onboard USB-UART bridge isn't reachable
+   from fabric (PL) logic, so `uart_tx_serial` is routed to a Pmod pin instead.
+
+## Known limitations
+
+- Single-cycle only — no pipelining, no interrupts/exceptions, no flags register.
+- `mem_decoder.sv` doesn't feed a UART-busy signal back to the CPU, so a program that
+  issues a second UART write before the first byte finishes transmitting may drop
+  data. Fine as long as test programs space out UART writes.
+- No assembler is included in this repository; `.mem` files are currently hand-assembled.
 
 ## Development workflow
 
