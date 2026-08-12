@@ -1,4 +1,4 @@
-# T16 — A 16-bit CPU Built From Scratch
+# T16 A 16-bit CPU Built From Scratch
 
 T16 is a small, single-cycle, 16-bit CPU implemented in SystemVerilog, targeting the
 Digilent Zybo Z7-10 (Xilinx Zynq-7000). It's a from-scratch learning project: a
