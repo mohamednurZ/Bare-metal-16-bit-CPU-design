@@ -1,12 +1,10 @@
 // mem_decoder.sv
-// T16 Memory Decoder — sits between the CPU and data_mem.sv.
+// T16 Memory Decode it sits between the CPU and data_mem.sv.
 // Implements the memory-mapped UART decision from the ISA spec:
 // a SW targeting address 0xFFF is intercepted and routed to the UART
 // transmitter instead of being written into data RAM. Every other address
 // behaves as ordinary RAM read/write.
-//
-// This is the one module that's allowed to know "0xFFF is special" — keeps
-// data_mem.sv itself generic and reusable.
+// This is the one module that's allowed to know "0xFFF is special" maintains data_mem.sv itself generic and reusable.
 
 module mem_decoder (
     input  logic        clk,
@@ -26,8 +24,7 @@ module mem_decoder (
     logic is_uart_addr;
     assign is_uart_addr = (addr == UART_ADDR);
 
-    // Only actually write to RAM if this ISN'T the UART address —
-    // this is what stops a UART "write" from corrupting data memory.
+    // Only actually write to RAM if this ISN'T the UART address, stops a UART "write" from corrupting data memory.
     logic ram_we;
     assign ram_we = mem_write && !is_uart_addr;
 
@@ -43,7 +40,6 @@ module mem_decoder (
     assign uart_tx_start = mem_write && is_uart_addr;
     assign uart_tx_data  = wr_data[7:0];
 
-    // NOTE (known simplification, documented deliberately — not a bug):
     // there is no "UART busy" signal fed back to the CPU here. If a program
     // issues a second OUT/SW-to-0xFFF before the first byte has finished
     // transmitting (uart_tx.sv takes many clock cycles per byte at typical
@@ -52,7 +48,6 @@ module mem_decoder (
     // with no stall/wait-state mechanism, as long as test programs pace
     // their UART writes with enough instructions in between. If this
     // becomes a real problem in testing, the fix is to add a uart_tx_busy
-    // output from uart_tx.sv and have software poll it — not implemented
     // here to keep scope contained.
 
 endmodule
