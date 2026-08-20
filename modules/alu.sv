@@ -1,9 +1,9 @@
 // alu.sv
-// T16 ALU — combinational, performs ADD/SUB/AND/OR/XOR/SHL/SHR
+// T16 ALU with combinational, performs ADD/SUB/AND/OR/XOR/SHL/SHR
 //
-// alu_op encoding (3 bits — matches the low 3 bits of the R-type opcodes,
+// alu_op encoding (3 bits that matches the low 3 bits of the R-type opcodes,
 // since ADD=0001, SUB=0010, ... SHR=0111 conveniently increment by 1):
-//   000 : unused (would collide with NOP's opcode range — not reachable via R-type dispatch)
+//   000 : unused (would collide with NOP's opcode range but not reachable via R-type dispatch)
 //   001 : ADD
 //   010 : SUB
 //   011 : AND
